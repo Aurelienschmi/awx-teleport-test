@@ -1,16 +1,23 @@
----
 - name: Hello World Sample
   hosts: all
-  gather_facts: yes
+  gather_facts: false
   pre_tasks:
-    - name: Attendre le ssh_config généré par tbot
+    - name: Wait for Teleport ssh_config to become available
       delegate_to: localhost
       run_once: true
       ansible.builtin.wait_for:
         path: /tbot-output/ssh_config
         state: present
-        timeout: 60
+        timeout: 120
+
+    - name: Configure SSH via Teleport
+      ansible.builtin.set_fact:
+        ansible_ssh_common_args: "-F /tbot-output/ssh_config"
+
   tasks:
-    - name: Hello World
-      debug:
-        msg: "Hello World!"
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: "Print node hostname"
+      ansible.builtin.command: "hostname"
+      changed_when: false
