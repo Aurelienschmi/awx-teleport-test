@@ -1,8 +1,16 @@
 ---
-- name: Hello World!
+- name: Hello World Sample
   hosts: all
- 
+  gather_facts: yes
+  pre_tasks:
+    - name: Attendre le ssh_config généré par tbot
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.wait_for:
+        path: /tbot-output/ssh_config
+        state: present
+        timeout: 60
   tasks:
- 
-  - name: Hello World!
-    shell: echo "Hi! Tower is working."
+    - name: Hello World
+      debug:
+        msg: "Hello World!"
