@@ -1,5 +1,5 @@
 ---
-- name: Hello World Sample
+- name: Install btop
   hosts: all
   gather_facts: false
   pre_tasks:
@@ -12,13 +12,26 @@
         timeout: 60
 
   tasks:
-    - name: Debug - afficher ansible_ssh_common_args résolu
-      ansible.builtin.debug:
-        msg: "{{ ansible_ssh_common_args }}"
-    
     - name: Gather facts
       ansible.builtin.setup:
 
-    - name: "Print node hostname"
-      ansible.builtin.command: "hostname"
+    - name: Update apt cache
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install btop
+      become: true
+      ansible.builtin.apt:
+        name: btop
+        state: present
+
+    - name: Verify btop is installed
+      ansible.builtin.command: btop --version
+      register: btop_version
       changed_when: false
+
+    - name: Display btop version
+      ansible.builtin.debug:
+        msg: "{{ btop_version.stdout }}"
