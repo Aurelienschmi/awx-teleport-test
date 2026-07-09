@@ -12,6 +12,10 @@
         timeout: 60
 
   tasks:
+    - name: Debug - afficher ansible_ssh_common_args résolu
+      ansible.builtin.debug:
+        msg: "{{ ansible_ssh_common_args }}"
+    
     - name: Gather facts
       ansible.builtin.setup:
 
