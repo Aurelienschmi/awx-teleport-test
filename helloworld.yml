@@ -1,35 +1,17 @@
+---
 - name: Hello World Sample
   hosts: all
   gather_facts: false
   pre_tasks:
-    - name: Wait for Teleport ssh_config to become available
+    - name: Wait for Teleport identity files to become available
       delegate_to: localhost
       run_once: true
       ansible.builtin.wait_for:
-        path: /tbot-output/ssh_config
+        path: /tbot-output/key-cert.pub
         state: present
-        timeout: 120
-
-    - name: Configure SSH via Teleport
-      ansible.builtin.set_fact:
-        ansible_ssh_common_args: "-F /tbot-output/ssh_config"
-      
-    - name: PAUSE DEBUG - garder le pod vivant pour investigation
-      delegate_to: localhost
-      ansible.builtin.pause:
-        seconds: 180
+        timeout: 60
 
   tasks:
-    - name: Show generated ssh_config (debug)
-      delegate_to: localhost
-      ansible.builtin.command: cat /tbot-output/ssh_config
-      register: ssh_config_content
-      changed_when: false
-
-    - name: Display ssh_config content
-      ansible.builtin.debug:
-        var: ssh_config_content.stdout_lines
-        
     - name: Gather facts
       ansible.builtin.setup:
 
