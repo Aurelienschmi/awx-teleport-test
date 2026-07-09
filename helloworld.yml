@@ -11,11 +11,10 @@
         state: present
         timeout: 60
 
-    - name: PAUSE DEBUG - garder le pod vivant pour investigation
-      delegate_to: localhost
-      ansible.builtin.pause:
-        seconds: 300
-
   tasks:
     - name: Gather facts
       ansible.builtin.setup:
+
+    - name: "Print node hostname"
+      ansible.builtin.command: "hostname"
+      changed_when: false
