@@ -11,19 +11,11 @@
         state: present
         timeout: 60
 
-  tasks:
-    - name: Debug - afficher ansible_ssh_common_args résolu
-      ansible.builtin.debug:
-        msg: "{{ ansible_ssh_common_args }}"
-
-    - name: Gather facts
-      ansible.builtin.setup:
-
-    - name: "Print node hostname"
-      ansible.builtin.command: "hostname"
-      changed_when: false
-
     - name: PAUSE DEBUG - garder le pod vivant pour investigation
       delegate_to: localhost
       ansible.builtin.pause:
-        seconds: 180
+        seconds: 300
+
+  tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
